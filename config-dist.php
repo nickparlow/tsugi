@@ -211,21 +211,49 @@ $CFG->owneremail = false; // 'csev@example.com'
 $CFG->providekeys = false;  // true
 $CFG->autoapprovekeys = false; // A regex like - '/.+@gmail\\.com/'
 
-// Go to https://console.developers.google.com/apis/credentials
-// create a new OAuth 2.0 credential for a web application,
-// get the key and secret, and put them here:
-$CFG->google_client_id = false; // '96041-nljpjj8jlv4.apps.googleusercontent.com';
-$CFG->google_client_secret = false; // '6Q7w_x4ESrl29a';
+// Microsoft Active Directory LDAP Authentication Configuration
+// Set these values to match your Active Directory environment
 
-// This is a legacy backwards compatibility.   In the round-trip to Google it used to
-// come back login.php after login was successful - If this is true, we come back
-// to login (without the php) - set this to false to restore the old pattern
-$CFG->google_login_new = true;
+// LDAP server host (use ldaps:// for SSL/TLS)
+$CFG->ldap_host = false; // 'ldap://your-ad-server.yourdomain.com' or 'ldaps://your-ad-server.yourdomain.com';
+
+// LDAP port (389 for standard LDAP, 636 for LDAPS, 3268 for Global Catalog)
+$CFG->ldap_port = 389; // Use 636 for LDAPS
+
+// Base DN for user searches
+$CFG->ldap_basedn = false; // 'DC=yourdomain,DC=com';
+
+// Service account for LDAP binding (can use UPN or DN format)
+$CFG->ldap_bind_dn = false; // 'CN=Service Account,OU=ServiceAccounts,DC=yourdomain,DC=com';
+// Or use UPN format: 'serviceaccount@yourdomain.com';
+
+// Service account password
+$CFG->ldap_bind_password = false; // 'your-service-account-password';
+
+// LDAP search filter for finding users (use {USERNAME} as placeholder)
+$CFG->ldap_search_filter = '(&(objectClass=user)(sAMAccountName={USERNAME}))';
+// Alternative using email: '(&(objectClass=user)(mail={USERNAME}))';
+
+// LDAP attribute mappings
+$CFG->ldap_attr_firstname = 'givenName';
+$CFG->ldap_attr_lastname = 'sn';
+$CFG->ldap_attr_email = 'mail';
+$CFG->ldap_attr_displayname = 'displayName';
+$CFG->ldap_attr_username = 'sAMAccountName';
+
+// Use TLS for LDAP connection (recommended if not using LDAPS)
+$CFG->ldap_use_tls = false; // Set to true to use STARTTLS
+
+// LDAP protocol version (typically 3 for Active Directory)
+$CFG->ldap_protocol_version = 3;
+
+// Login return URL configuration
 $CFG->login_return_url = false;
 
 // Defaults to $CFG->apphome if defined and $CFG->wwwroot if that is not defined or false
 $CFG->logout_return_url = false;
 
+// Google Maps API (if still needed for other features)
 // Go to https://console.developers.google.com/apis/credentials
 // Create and configure an API key and enter it here
 $CFG->google_map_api_key = false; // 'Ve8eH490843cIA9IGl8';
