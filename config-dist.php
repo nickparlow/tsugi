@@ -211,26 +211,73 @@ $CFG->owneremail = false; // 'csev@example.com'
 $CFG->providekeys = false;  // true
 $CFG->autoapprovekeys = false; // A regex like - '/.+@gmail\\.com/'
 
-// Go to https://console.developers.google.com/apis/credentials
-// create a new OAuth 2.0 credential for a web application,
-// get the key and secret, and put them here:
-$CFG->google_client_id = false; // '96041-nljpjj8jlv4.apps.googleusercontent.com';
-$CFG->google_client_secret = false; // '6Q7w_x4ESrl29a';
+// LDAP Authentication Configuration for Microsoft Active Directory
+// Configure these settings to connect to your AD/LDAP server
+// for user authentication instead of Google OAuth
 
-// This is a legacy backwards compatibility.   In the round-trip to Google it used to
-// come back login.php after login was successful - If this is true, we come back
-// to login (without the php) - set this to false to restore the old pattern
-$CFG->google_login_new = true;
+// LDAP server configuration
+// For SSL/TLS connections, use ldaps:// protocol and port 636
+// For standard connections, use ldap:// protocol and port 389
+// For Global Catalog queries, use port 3268 (3269 for SSL)
+$CFG->ldap_host = false; // 'ldap://ad.example.com' or 'ldaps://ad.example.com';
+$CFG->ldap_port = false; // 389 for standard LDAP, 636 for LDAPS, 3268 for Global Catalog
+
+// LDAP base DN - the base distinguished name for user searches
+// Example: 'DC=example,DC=com' or 'OU=Users,DC=example,DC=com'
+$CFG->ldap_basedn = false; // 'DC=example,DC=com';
+
+// LDAP bind DN - the account used to bind and search the directory
+// For Active Directory, this can be a user principal name or distinguished name
+// Example: 'CN=LDAP Service Account,OU=Service Accounts,DC=example,DC=com'
+// Or: 'ldapservice@example.com'
+$CFG->ldap_binddn = false; // 'CN=Service Account,OU=Service Accounts,DC=example,DC=com';
+$CFG->ldap_bindpw = false; // 'ServiceAccountPassword';
+
+// LDAP user search filter for Active Directory
+// This filter determines how users are found in the directory
+// Common AD attribute: sAMAccountName (Windows login name)
+// Or use userPrincipalName for email-style logins
+$CFG->ldap_user_filter = false; // '(&(objectClass=user)(sAMAccountName=%s))';
+// Alternative for UPN: '(&(objectClass=user)(userPrincipalName=%s@example.com))';
+
+// LDAP attributes to retrieve from Active Directory
+// These map AD attributes to Tsugi user fields
+$CFG->ldap_user_attributes = array(
+    'username' => 'sAMAccountName',  // Windows username
+    'email' => 'mail',                // Email address
+    'firstname' => 'givenName',       // First name
+    'lastname' => 'sn',               // Last name (surname)
+    'displayname' => 'displayName',   // Full display name
+);
+
+// LDAP SSL/TLS configuration
+// Set to true to use StartTLS for encryption (recommended)
+// Note: This is different from ldaps:// - StartTLS upgrades a standard connection
+$CFG->ldap_start_tls = false; // true;
+
+// Whether to verify the SSL certificate when using LDAPS or StartTLS
+// In production, this should be true. Set to false only for testing with self-signed certs
+$CFG->ldap_tls_verify = true; // Set to false for self-signed certificates (not recommended for production)
+
+// Active Directory specific options
+// Set the LDAP protocol version (AD requires version 3)
+$CFG->ldap_version = 3;
+
+// Whether to follow LDAP referrals (typically set to false for AD)
+$CFG->ldap_referrals = false;
+
+// Network timeout for LDAP operations (in seconds)
+$CFG->ldap_network_timeout = 10;
+
+// Enable LDAP authentication instead of Google OAuth
+// Set to true to enable LDAP authentication
+$CFG->ldap_enabled = false; // Set to true to enable LDAP authentication
+
+// Login return URL after successful authentication
 $CFG->login_return_url = false;
 
 // Defaults to $CFG->apphome if defined and $CFG->wwwroot if that is not defined or false
 $CFG->logout_return_url = false;
-
-// Go to https://console.developers.google.com/apis/credentials
-// Create and configure an API key and enter it here
-$CFG->google_map_api_key = false; // 'Ve8eH490843cIA9IGl8';
-
-$CFG->google_translate = false;
 
 // You can specify a default menu for Tsugi to use across the site if there is no
 // defined menu given
